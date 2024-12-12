@@ -588,6 +588,38 @@ export class InteractionObjectFactory {
   ): Solution {
     return this.solutionFactory.createFromBackendDict(solutionBackendDict);
   }
+  
+  formatInteractionAsHtml(interaction: Interaction): string {
+    // Based on the interaction type, generate the appropriate HTML.
+    let htmlString = '';
+
+    switch (interaction.id) {
+      case 'TextInput':
+        htmlString = this._formatTextInputAsHtml(interaction);
+        break;
+      case 'MultipleChoiceInput':
+        htmlString = this._formatMultipleChoiceAsHtml(interaction);
+        break;
+      // Handle more interaction types...
+      default:
+        throw new Error(`Unknown interaction type: ${interaction.id}`);
+    }
+
+    return htmlString;
+  }
+
+  private _formatTextInputAsHtml(interaction: Interaction): string {
+    // Logic to format TextInput into HTML
+    return `<input type="text" placeholder="${interaction.customizationArgs.placeholder.value}" />`;
+  }
+
+  private _formatMultipleChoiceAsHtml(interaction: Interaction): string {
+    // Logic to format MultipleChoiceInput into HTML
+    let choicesHtml = interaction.customizationArgs.choices.value.map(
+      (choice: SubtitledHtml) => `<option>${choice.html}</option>`
+    ).join('');
+    return `<select>${choicesHtml}</select>`;
+  }
 }
 
 angular
